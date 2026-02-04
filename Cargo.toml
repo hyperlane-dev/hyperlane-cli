@@ -1,0 +1,33 @@
+[package]
+name = "hyperlane-cli"
+version = "0.1.0"
+readme = "README.md"
+edition = "2024"
+authors = ["root@ltpp.vip"]
+license = "MIT"
+description = """A command-line tool for Hyperlane framework."""
+keywords = ["output", "console", "log", "print", "color"]
+repository = "https://github.com/hyperlane-dev/hyperlane-cli"
+categories = ["command-line-interface", "development-tools", "visualization"]
+exclude = ["target", "Cargo.lock", "sh", ".github"]
+
+[dependencies]
+tokio = { version = "1", features = ["process", "rt-multi-thread", "macros"] }
+
+[profile.dev]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
+
+[profile.release]
+incremental = false
+opt-level = 3
+lto = true
+panic = "unwind"
+debug = false
+codegen-units = 1
+strip = "debuginfo"
