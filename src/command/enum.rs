@@ -1,6 +1,6 @@
 /// Available commands
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum CommandType {
+pub(crate) enum CommandType {
     /// Format code using cargo fmt
     Fmt,
     /// Watch files using cargo-watch

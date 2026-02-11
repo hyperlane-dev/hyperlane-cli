@@ -5,7 +5,7 @@ use crate::*;
 /// # Returns
 ///
 /// - `Args`: Parsed arguments
-pub fn parse_args() -> Args {
+pub(crate) fn parse_args() -> Args {
     let raw_args: Vec<String> = args().collect();
     let mut command: CommandType = CommandType::Help;
     let mut check: bool = false;
