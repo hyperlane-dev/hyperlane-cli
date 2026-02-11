@@ -47,7 +47,10 @@ pub(crate) fn parse_args() -> Args {
                 if command == CommandType::Help || command == CommandType::Version {
                     command = CommandType::New;
                     i += 1;
-                    if i < raw_args.len() && !raw_args[i].starts_with("--") && !raw_args[i].starts_with("-") {
+                    if i < raw_args.len()
+                        && !raw_args[i].starts_with("--")
+                        && !raw_args[i].starts_with("-")
+                    {
                         project_name = Some(raw_args[i].clone());
                     } else {
                         i -= 1;

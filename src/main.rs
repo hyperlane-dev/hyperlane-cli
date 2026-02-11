@@ -88,7 +88,9 @@ async fn main() {
                     exit(1);
                 }
             } else {
-                eprintln!("Error: Project name is required. Usage: hyperlane-cli new <PROJECT_NAME>");
+                eprintln!(
+                    "Error: Project name is required. Usage: hyperlane-cli new <PROJECT_NAME>"
+                );
                 exit(1);
             }
         }

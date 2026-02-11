@@ -1,10 +1,13 @@
 /// Error types for publish operation
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Debug, thiserror::Error)]
 pub(crate) enum PublishError {
     /// Failed to parse Cargo.toml
+    #[error("Failed to parse Cargo.toml")]
     ManifestParseError,
     /// Circular dependency detected
+    #[error("Circular dependency detected")]
     CircularDependency,
     /// IO error
-    IoError,
+    #[error("IO error: {0}")]
+    IoError(#[from] std::io::Error),
 }

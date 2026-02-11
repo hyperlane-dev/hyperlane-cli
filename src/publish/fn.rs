@@ -10,7 +10,7 @@ use crate::*;
 ///
 /// - `Result<Vec<Package>, PublishError>`: List of packages or error
 fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError> {
-    let content: String = read_to_string(workspace_root).map_err(|_| PublishError::IoError)?;
+    let content: String = read_to_string(workspace_root)?;
     let doc: toml::Value =
         toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let mut packages: Vec<Package> = Vec::new();
@@ -51,8 +51,8 @@ fn expand_pattern(
         let parent: &Path = Path::new(pattern).parent().unwrap_or(Path::new("."));
         let full_parent: PathBuf = base_path.join(parent);
         if full_parent.is_dir() {
-            for entry in std::fs::read_dir(&full_parent).map_err(|_| PublishError::IoError)? {
-                let entry: std::fs::DirEntry = entry.map_err(|_| PublishError::IoError)?;
+            for entry in std::fs::read_dir(&full_parent)? {
+                let entry: std::fs::DirEntry = entry?;
                 let path: PathBuf = entry.path();
                 if path.is_dir() {
                     let cargo_toml: PathBuf = path.join("Cargo.toml");
@@ -96,7 +96,7 @@ fn read_single_package(manifest_path: &Path) -> Result<Package, PublishError> {
 ///
 /// - `Result<Package, PublishError>`: Package info or error
 fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishError> {
-    let content: String = read_to_string(manifest_path).map_err(|_| PublishError::IoError)?;
+    let content: String = read_to_string(manifest_path)?;
     let doc: toml::Value =
         toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let package_table: &toml::Value = doc.get("package").ok_or(PublishError::ManifestParseError)?;

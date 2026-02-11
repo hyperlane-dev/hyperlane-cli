@@ -70,7 +70,7 @@ async fn git_clone(config: &NewProjectConfig) -> Result<(), NewError> {
         .stderr(Stdio::piped())
         .output()
         .await
-        .map_err(|e| NewError::IoError(e))?;
+        .map_err(NewError::IoError)?;
     if output.status.success() {
         Ok(())
     } else {
