@@ -6,6 +6,7 @@ pub(crate) fn print_help() {
     println!("  bump      Bump version in Cargo.toml");
     println!("  fmt       Format Rust code using cargo fmt");
     println!("  watch     Watch files and run cargo run using cargo-watch");
+    println!("  publish   Publish packages in monorepo with topological ordering");
     println!("  -h, --help      Print this help message");
     println!("  -v, --version   Print version information");
     println!();
@@ -28,4 +29,8 @@ pub(crate) fn print_help() {
     println!("Fmt Options:");
     println!("  --check         Check formatting without making changes");
     println!("  --manifest-path <PATH>  Path to Cargo.toml");
+    println!();
+    println!("Publish Options:");
+    println!("  --manifest-path <PATH>  Path to workspace Cargo.toml [default: Cargo.toml]");
+    println!("  --max-retries <N>       Maximum retry attempts per package [default: 3]");
 }

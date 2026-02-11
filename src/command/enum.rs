@@ -7,6 +7,8 @@ pub(crate) enum CommandType {
     Watch,
     /// Bump version in Cargo.toml
     Bump,
+    /// Publish packages in monorepo
+    Publish,
     /// Show help
     Help,
     /// Show version
