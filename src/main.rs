@@ -47,7 +47,7 @@ async fn main() {
                 .manifest_path
                 .unwrap_or_else(|| "Cargo.toml".to_string());
             let bump_type: BumpVersionType = args.bump_type.unwrap_or(BumpVersionType::Patch);
-            match execute_bump(&manifest_path, bump_type) {
+            match execute_bump(&manifest_path, &bump_type) {
                 Ok(new_version) => {
                     println!("Version bumped to {new_version}");
                 }

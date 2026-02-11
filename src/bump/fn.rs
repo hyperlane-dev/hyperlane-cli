@@ -4,7 +4,7 @@ use crate::*;
 ///
 /// # Arguments
 ///
-/// - `&str`: The version string to parse (e.g., "0.1.2" or "0.1.2-alpha")
+/// - `&str`: The version string to parse (e.g., "0.1.0" or "0.1.0-alpha")
 ///
 /// # Returns
 ///
@@ -79,7 +79,7 @@ fn get_next_prerelease(current: Option<&String>, target_type: &str) -> String {
 ///
 /// # Returns
 ///
-/// - `String`: Version string (e.g., "0.1.2" or "0.1.2-alpha")
+/// - `String`: Version string (e.g., "0.1.0" or "0.1.0-alpha")
 fn version_to_string(version: &Version) -> String {
     let base: String = format!("{}.{}.{}", version.major, version.minor, version.patch);
     match &version.prerelease {
@@ -93,12 +93,12 @@ fn version_to_string(version: &Version) -> String {
 /// # Arguments
 ///
 /// - `&Version`: The current version
-/// - `BumpVersionType`: The type of version bump to apply
+/// - `&BumpVersionType`: The type of version bump to apply
 ///
 /// # Returns
 ///
 /// - `Version`: The new version after bumping
-fn bump_version(version: &Version, bump_type: BumpVersionType) -> Version {
+fn bump_version(version: &Version, bump_type: &BumpVersionType) -> Version {
     match bump_type {
         BumpVersionType::Patch => Version {
             major: version.major,
@@ -183,14 +183,14 @@ fn find_version_position(line: &str) -> Option<(usize, usize)> {
 /// # Arguments
 ///
 /// - `&str`: Path to Cargo.toml file
-/// - `BumpVersionType`: Type of version bump to apply
+/// - `&BumpVersionType`: Type of version bump to apply
 ///
 /// # Returns
 ///
 /// - `Result<String, Box<dyn std::error::Error>>`: The new version string or an error
 pub(crate) fn execute_bump(
     manifest_path: &str,
-    bump_type: BumpVersionType,
+    bump_type: &BumpVersionType,
 ) -> Result<String, Box<dyn std::error::Error>> {
     let path: &Path = Path::new(manifest_path);
     let content: String = read_to_string(path)?;
