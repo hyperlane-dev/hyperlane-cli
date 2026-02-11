@@ -7,8 +7,12 @@ pub(crate) fn print_help() {
     println!("  fmt       Format Rust code using cargo fmt");
     println!("  watch     Watch files and run cargo run using cargo-watch");
     println!("  publish   Publish packages in monorepo with topological ordering");
+    println!("  new       Create a new project from template");
     println!("  -h, --help      Print this help message");
     println!("  -v, --version   Print version information");
+    println!();
+    println!("New Options:");
+    println!("  <PROJECT_NAME>  Name of the project to create");
     println!();
     println!("Bump Options:");
     println!("  --patch         Bump patch version (0.1.2 -> 0.1.3) [default]");

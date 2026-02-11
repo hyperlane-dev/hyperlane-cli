@@ -12,6 +12,7 @@ pub(crate) fn parse_args() -> Args {
     let mut manifest_path: Option<String> = None;
     let mut bump_type: Option<BumpVersionType> = None;
     let mut max_retries: u32 = 3;
+    let mut project_name: Option<String> = None;
     let mut i: usize = 1;
     while i < raw_args.len() {
         let arg: &str = raw_args[i].as_str();
@@ -40,6 +41,17 @@ pub(crate) fn parse_args() -> Args {
             "publish" => {
                 if command == CommandType::Help || command == CommandType::Version {
                     command = CommandType::Publish;
+                }
+            }
+            "new" => {
+                if command == CommandType::Help || command == CommandType::Version {
+                    command = CommandType::New;
+                    i += 1;
+                    if i < raw_args.len() && !raw_args[i].starts_with("--") && !raw_args[i].starts_with("-") {
+                        project_name = Some(raw_args[i].clone());
+                    } else {
+                        i -= 1;
+                    }
                 }
             }
             "--patch" => {
@@ -90,5 +102,6 @@ pub(crate) fn parse_args() -> Args {
         manifest_path,
         bump_type,
         max_retries,
+        project_name,
     }
 }

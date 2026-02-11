@@ -9,6 +9,8 @@ pub(crate) enum CommandType {
     Bump,
     /// Publish packages in monorepo
     Publish,
+    /// Create a new project from template
+    New,
     /// Show help
     Help,
     /// Show version

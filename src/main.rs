@@ -7,12 +7,13 @@ mod command;
 mod config;
 mod fmt;
 mod help;
+mod new;
 mod publish;
 mod version;
 mod watch;
 
 pub(crate) use {
-    bump::*, command::*, config::*, fmt::*, help::*, publish::*, version::*, watch::*,
+    bump::*, command::*, config::*, fmt::*, help::*, new::*, publish::*, version::*, watch::*,
 };
 
 pub(crate) use std::{
@@ -78,6 +79,17 @@ async fn main() {
                     eprintln!("publish failed: {error}");
                     exit(1);
                 }
+            }
+        }
+        CommandType::New => {
+            if let Some(project_name) = args.project_name {
+                if let Err(error) = execute_new(&project_name).await {
+                    eprintln!("new failed: {error}");
+                    exit(1);
+                }
+            } else {
+                eprintln!("Error: Project name is required. Usage: hyperlane-cli new <PROJECT_NAME>");
+                exit(1);
             }
         }
         CommandType::Help => print_help(),

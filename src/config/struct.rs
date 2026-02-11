@@ -13,4 +13,6 @@ pub struct Args {
     pub bump_type: Option<BumpVersionType>,
     /// Maximum retry attempts for publish command
     pub max_retries: u32,
+    /// Project name for new command
+    pub project_name: Option<String>,
 }
