@@ -36,9 +36,11 @@ async fn install_cargo_clippy() -> Result<(), std::io::Error> {
 /// Execute clippy fix command
 ///
 /// # Arguments
-/// - `args`: The parsed arguments
+///
+/// - `&Args`: The parsed arguments
 ///
 /// # Returns
+///
 /// - `Result<(), std::io::Error>`: Success or error
 async fn execute_clippy_fix(args: &Args) -> Result<(), std::io::Error> {
     if !is_cargo_clippy_installed().await {
@@ -64,7 +66,8 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), std::io::Error> {
 /// Execute fmt command
 ///
 /// # Arguments
-/// - `args`: The parsed arguments
+///
+/// - `&Args`: The parsed arguments
 ///
 /// # Returns
 ///

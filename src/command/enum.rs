@@ -5,6 +5,8 @@ pub(crate) enum CommandType {
     Fmt,
     /// Watch files using cargo-watch
     Watch,
+    /// Bump version in Cargo.toml
+    Bump,
     /// Show help
     Help,
     /// Show version

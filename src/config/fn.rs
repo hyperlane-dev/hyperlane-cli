@@ -10,6 +10,7 @@ pub(crate) fn parse_args() -> Args {
     let mut command: CommandType = CommandType::Help;
     let mut check: bool = false;
     let mut manifest_path: Option<String> = None;
+    let mut bump_type: Option<BumpVersionType> = None;
     let mut i: usize = 1;
     while i < raw_args.len() {
         let arg: &str = raw_args[i].as_str();
@@ -30,6 +31,32 @@ pub(crate) fn parse_args() -> Args {
                     command = CommandType::Watch;
                 }
             }
+            "bump" => {
+                if command == CommandType::Help || command == CommandType::Version {
+                    command = CommandType::Bump;
+                }
+            }
+            "--patch" => {
+                bump_type = Some(BumpVersionType::Patch);
+            }
+            "--minor" => {
+                bump_type = Some(BumpVersionType::Minor);
+            }
+            "--major" => {
+                bump_type = Some(BumpVersionType::Major);
+            }
+            "--release" => {
+                bump_type = Some(BumpVersionType::Release);
+            }
+            "--alpha" => {
+                bump_type = Some(BumpVersionType::Alpha);
+            }
+            "--beta" => {
+                bump_type = Some(BumpVersionType::Beta);
+            }
+            "--rc" => {
+                bump_type = Some(BumpVersionType::Rc);
+            }
             "--check" => {
                 check = true;
             }
@@ -47,5 +74,6 @@ pub(crate) fn parse_args() -> Args {
         command,
         check,
         manifest_path,
+        bump_type,
     }
 }
