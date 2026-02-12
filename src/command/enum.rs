@@ -11,6 +11,8 @@ pub(crate) enum CommandType {
     Publish,
     /// Create a new project from template
     New,
+    /// Generate template components
+    Template,
     /// Show help
     Help,
     /// Show version

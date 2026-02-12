@@ -1,6 +1,6 @@
 [package]
 name = "hyperlane-cli"
-version = "0.1.7"
+version = "0.1.8"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -9,7 +9,7 @@ description = """A command-line tool for Hyperlane framework."""
 keywords = ["output", "console", "log", "print", "color"]
 repository = "https://github.com/hyperlane-dev/hyperlane-cli"
 categories = ["command-line-interface", "development-tools", "visualization"]
-exclude = ["target", "Cargo.lock", "sh", ".github"]
+exclude = ["target", "Cargo.lock", "sh", ".github", "tmp"]
 
 [dependencies]
 toml = "0.9.8"

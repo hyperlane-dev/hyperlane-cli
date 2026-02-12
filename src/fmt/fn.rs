@@ -91,3 +91,20 @@ pub(crate) async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
     }
     Ok(())
 }
+
+/// Format code at specific path
+///
+/// # Arguments
+///
+/// - `&Path`: Path to format
+///
+/// # Returns
+///
+/// - `Result<(), std::io::Error>`: Success or error
+pub(crate) async fn format_path(path: &std::path::Path) -> Result<(), std::io::Error> {
+    let mut cmd: Command = Command::new("cargo");
+    cmd.arg("fmt").arg("--").arg(path);
+    cmd.stdout(Stdio::null()).stderr(Stdio::null());
+    cmd.status().await?;
+    Ok(())
+}

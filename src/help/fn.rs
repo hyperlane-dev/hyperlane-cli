@@ -8,6 +8,9 @@ pub(crate) fn print_help() {
     println!("  watch     Watch files and run cargo run using cargo-watch");
     println!("  publish   Publish packages in monorepo with topological ordering");
     println!("  new       Create a new project from template");
+    println!(
+        "  template  Generate template components (controller|domain|exception|mapper|model|repository|service|utils|view)"
+    );
     println!("  -h, --help      Print this help message");
     println!("  -v, --version   Print version information");
     println!();
