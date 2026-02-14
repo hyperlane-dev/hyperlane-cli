@@ -25,9 +25,13 @@ pub(crate) use std::{
     path::{Path, PathBuf},
     process::{ExitStatus, Stdio, exit},
     str::FromStr,
+    sync::{Arc, LazyLock},
 };
 
-pub(crate) use tokio::process::Command;
+pub(crate) use {
+    regex::{Captures, Regex},
+    tokio::{process::Command, sync::Mutex},
+};
 
 #[tokio::main]
 async fn main() {

@@ -1,6 +1,6 @@
 [package]
 name = "hyperlane-cli"
-version = "0.1.8"
+version = "0.1.9"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -13,6 +13,7 @@ exclude = ["target", "Cargo.lock", "sh", ".github", "tmp"]
 
 [dependencies]
 toml = "0.9.8"
+regex = "1.11.1"
 thiserror = "2.0.18"
 tokio = { version = "1.49.0", features = ["full"] }
 
