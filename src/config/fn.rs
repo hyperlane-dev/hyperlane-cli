@@ -125,11 +125,10 @@ pub(crate) fn parse_args() -> Args {
             }
             "--max-retries" => {
                 i += 1;
-                if i < raw_args.len() {
-                    if let Ok(n) = raw_args[i].parse::<u32>() {
+                if i < raw_args.len()
+                    && let Ok(n) = raw_args[i].parse::<u32>() {
                         max_retries = n;
                     }
-                }
             }
             _ => {}
         }

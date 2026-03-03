@@ -14,8 +14,8 @@ fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError
     let doc: toml::Value =
         toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let mut packages: Vec<Package> = Vec::new();
-    if let Some(workspace) = doc.get("workspace") {
-        if let Some(members) = workspace.get("members").and_then(|m| m.as_array()) {
+    if let Some(workspace) = doc.get("workspace")
+        && let Some(members) = workspace.get("members").and_then(|m| m.as_array()) {
             for member in members {
                 if let Some(pattern) = member.as_str() {
                     let base_path: &Path = workspace_root.parent().unwrap_or(workspace_root);
@@ -23,7 +23,6 @@ fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError
                 }
             }
         }
-    }
     if packages.is_empty() {
         let package: Package = read_single_package(workspace_root)?;
         packages.push(package);

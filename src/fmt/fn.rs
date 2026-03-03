@@ -77,9 +77,9 @@ async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, std::io::
         find_rust_files_in_dir(&src_dir, &mut files).await?;
     }
     let content: String = read_to_string(manifest_path)?;
-    if let Ok(doc) = toml::from_str::<toml::Value>(&content) {
-        if let Some(workspace) = doc.get("workspace") {
-            if let Some(members) = workspace
+    if let Ok(doc) = toml::from_str::<toml::Value>(&content)
+        && let Some(workspace) = doc.get("workspace")
+            && let Some(members) = workspace
                 .get("members")
                 .and_then(|m: &toml::Value| m.as_array())
             {
@@ -92,8 +92,6 @@ async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, std::io::
                     }
                 }
             }
-        }
-    }
     Ok(files)
 }
 
