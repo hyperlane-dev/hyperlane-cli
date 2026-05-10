@@ -61,9 +61,11 @@ fn get_next_prerelease(current: Option<&String>, target_type: &str) -> String {
     match current {
         Some(pre) => {
             if let Some((pre_type, number)) = parse_prerelease(pre)
-                && pre_type == target_type && number > 0 {
-                    return format!("{}.{}", target_type, number + 1);
-                }
+                && pre_type == target_type
+                && number > 0
+            {
+                return format!("{}.{}", target_type, number + 1);
+            }
             format!("{target_type}.1")
         }
         None => target_type.to_string(),

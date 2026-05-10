@@ -28,69 +28,57 @@ pub(crate) fn parse_args() -> Args {
             "-v" | "--version" => {
                 command = CommandType::Version;
             }
-            "fmt" => {
-                if command == CommandType::Help || command == CommandType::Version {
-                    command = CommandType::Fmt;
+            "fmt" if (command == CommandType::Help || command == CommandType::Version) => {
+                command = CommandType::Fmt;
+            }
+            "watch" if (command == CommandType::Help || command == CommandType::Version) => {
+                command = CommandType::Watch;
+            }
+            "bump" if (command == CommandType::Help || command == CommandType::Version) => {
+                command = CommandType::Bump;
+            }
+            "publish" if (command == CommandType::Help || command == CommandType::Version) => {
+                command = CommandType::Publish;
+            }
+            "new" if (command == CommandType::Help || command == CommandType::Version) => {
+                command = CommandType::New;
+                i += 1;
+                if i < raw_args.len()
+                    && !raw_args[i].starts_with("--")
+                    && !raw_args[i].starts_with("-")
+                {
+                    project_name = Some(raw_args[i].clone());
+                } else {
+                    i -= 1;
                 }
             }
-            "watch" => {
-                if command == CommandType::Help || command == CommandType::Version {
-                    command = CommandType::Watch;
-                }
-            }
-            "bump" => {
-                if command == CommandType::Help || command == CommandType::Version {
-                    command = CommandType::Bump;
-                }
-            }
-            "publish" => {
-                if command == CommandType::Help || command == CommandType::Version {
-                    command = CommandType::Publish;
-                }
-            }
-            "new" => {
-                if command == CommandType::Help || command == CommandType::Version {
-                    command = CommandType::New;
+            "template" if (command == CommandType::Help || command == CommandType::Version) => {
+                command = CommandType::Template;
+                i += 1;
+                if i < raw_args.len()
+                    && !raw_args[i].starts_with("--")
+                    && !raw_args[i].starts_with("-")
+                {
+                    let type_str: &str = &raw_args[i];
+                    template_type = TemplateType::from_str(type_str).ok();
                     i += 1;
-                    if i < raw_args.len()
+                    if template_type == Some(TemplateType::Model)
+                        && i < raw_args.len()
                         && !raw_args[i].starts_with("--")
                         && !raw_args[i].starts_with("-")
                     {
-                        project_name = Some(raw_args[i].clone());
-                    } else {
-                        i -= 1;
-                    }
-                }
-            }
-            "template" => {
-                if command == CommandType::Help || command == CommandType::Version {
-                    command = CommandType::Template;
-                    i += 1;
-                    if i < raw_args.len()
-                        && !raw_args[i].starts_with("--")
-                        && !raw_args[i].starts_with("-")
-                    {
-                        let type_str: &str = &raw_args[i];
-                        template_type = TemplateType::from_str(type_str).ok();
+                        let sub_type_str: &str = &raw_args[i];
+                        model_sub_type = ModelSubType::from_str(sub_type_str).ok();
                         i += 1;
-                        if template_type == Some(TemplateType::Model)
-                            && i < raw_args.len()
-                            && !raw_args[i].starts_with("--")
-                            && !raw_args[i].starts_with("-")
-                        {
-                            let sub_type_str: &str = &raw_args[i];
-                            model_sub_type = ModelSubType::from_str(sub_type_str).ok();
-                            i += 1;
-                        }
-                        if i < raw_args.len()
-                            && !raw_args[i].starts_with("--")
-                            && !raw_args[i].starts_with("-")
-                        {
-                            component_name = Some(raw_args[i].clone());
-                            i += 1;
-                        }
-                        i -= 1;
                     }
+                    if i < raw_args.len()
+                        && !raw_args[i].starts_with("--")
+                        && !raw_args[i].starts_with("-")
+                    {
+                        component_name = Some(raw_args[i].clone());
+                        i += 1;
+                    }
+                    i -= 1;
                 }
             }
             "--patch" => {
@@ -126,9 +114,10 @@ pub(crate) fn parse_args() -> Args {
             "--max-retries" => {
                 i += 1;
                 if i < raw_args.len()
-                    && let Ok(n) = raw_args[i].parse::<u32>() {
-                        max_retries = n;
-                    }
+                    && let Ok(n) = raw_args[i].parse::<u32>()
+                {
+                    max_retries = n;
+                }
             }
             _ => {}
         }
