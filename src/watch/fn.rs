@@ -37,7 +37,7 @@ async fn install_cargo_watch() -> Result<(), std::io::Error> {
 /// # Returns
 ///
 /// - `Result<(), std::io::Error>`: Success or error
-pub(crate) async fn execute_watch() -> Result<(), std::io::Error> {
+pub async fn execute_watch() -> Result<(), std::io::Error> {
     if !is_cargo_watch_installed().await {
         install_cargo_watch().await?;
     }

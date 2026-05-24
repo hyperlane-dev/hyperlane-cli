@@ -1,6 +1,6 @@
 /// Error types for publish operation
 #[derive(Debug, thiserror::Error)]
-pub(crate) enum PublishError {
+pub enum PublishError {
     /// Failed to parse Cargo.toml
     #[error("Failed to parse Cargo.toml")]
     ManifestParseError,

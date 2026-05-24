@@ -88,7 +88,7 @@ async fn git_clone(config: &NewProjectConfig) -> Result<(), NewError> {
 /// # Returns
 ///
 /// - `Result<(), NewError>`: Success or error
-pub(crate) async fn execute_new(project_name: &str) -> Result<(), NewError> {
+pub async fn execute_new(project_name: &str) -> Result<(), NewError> {
     validate_project_name(project_name)?;
     check_git_available().await?;
     let config: NewProjectConfig = NewProjectConfig::new(project_name.to_string());

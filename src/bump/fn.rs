@@ -189,7 +189,7 @@ fn find_version_position(line: &str) -> Option<(usize, usize)> {
 /// # Returns
 ///
 /// - `Result<String, Box<dyn std::error::Error>>`: The new version string or an error
-pub(crate) fn execute_bump(
+pub fn execute_bump(
     manifest_path: &str,
     bump_type: &BumpVersionType,
 ) -> Result<String, Box<dyn std::error::Error>> {

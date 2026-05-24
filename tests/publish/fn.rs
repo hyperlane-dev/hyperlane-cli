@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 #[test]
 fn test_package_creation() {
@@ -90,7 +90,6 @@ fn test_publish_result_clone() {
 fn test_publish_error_display() {
     let error1: PublishError = PublishError::ManifestParseError;
     assert!(error1.to_string().contains("Failed to parse"));
-
     let error2: PublishError = PublishError::CircularDependency;
     assert!(error2.to_string().contains("Circular dependency"));
 }

@@ -345,7 +345,7 @@ fn create_model_template(
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-pub(crate) async fn execute_template(
+pub async fn execute_template(
     template_type: TemplateType,
     component_name: &str,
     model_sub_type: Option<ModelSubType>,

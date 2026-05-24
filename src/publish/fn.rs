@@ -292,7 +292,7 @@ async fn publish_single_package(package: &Package) -> Result<(), Box<dyn std::er
 /// # Returns
 ///
 /// - `Result<Vec<PublishResult>, PublishError>`: Results for all packages
-pub(crate) async fn execute_publish(
+pub async fn execute_publish(
     manifest_path: &str,
     max_retries: u32,
 ) -> Result<Vec<PublishResult>, PublishError> {

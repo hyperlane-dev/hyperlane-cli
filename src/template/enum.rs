@@ -1,6 +1,6 @@
 /// Types of template components that can be generated
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum TemplateType {
+pub enum TemplateType {
     /// Controller component for handling HTTP requests
     Controller,
     /// Domain component for business logic encapsulation
@@ -23,7 +23,7 @@ pub(crate) enum TemplateType {
 
 /// Model subtypes for organizing data structures
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum ModelSubType {
+pub enum ModelSubType {
     /// Application model for internal use
     Application,
     /// Request model for input validation
@@ -34,7 +34,7 @@ pub(crate) enum ModelSubType {
 
 /// Errors that can occur during template generation
 #[derive(Debug, thiserror::Error)]
-pub(crate) enum TemplateError {
+pub enum TemplateError {
     /// IO error occurred
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),

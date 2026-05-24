@@ -1,5 +1,5 @@
 /// Print help message
-pub(crate) fn print_help() {
+pub fn print_help() {
     println!("hyperlane-cli [COMMAND] [OPTIONS]");
     println!();
     println!("Commands:");

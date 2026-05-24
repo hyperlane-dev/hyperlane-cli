@@ -233,7 +233,7 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), std::io::Error> {
 /// # Returns
 ///
 /// - `Result<(), std::io::Error>`: Success or error
-pub(crate) async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
+pub async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
     let manifest_path: String = args
         .manifest_path
         .clone()
@@ -269,7 +269,7 @@ pub(crate) async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
 /// # Returns
 ///
 /// - `Result<(), std::io::Error>`: Success or error
-pub(crate) async fn format_path(path: &std::path::Path) -> Result<(), std::io::Error> {
+pub async fn format_path(path: &std::path::Path) -> Result<(), std::io::Error> {
     let mut cmd: Command = Command::new("cargo");
     cmd.arg("fmt").arg("--").arg(path);
     cmd.stdout(Stdio::null()).stderr(Stdio::null());

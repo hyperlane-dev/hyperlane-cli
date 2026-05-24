@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 #[test]
 fn test_new_project_config_creation() {
@@ -14,13 +14,10 @@ fn test_new_project_config_creation() {
 fn test_new_error_display() {
     let error1: NewError = NewError::GitNotFound;
     assert!(error1.to_string().contains("Git is not installed"));
-
     let error2: NewError = NewError::ProjectExists("test".to_string());
     assert!(error2.to_string().contains("test"));
-
     let error3: NewError = NewError::CloneFailed("network error".to_string());
     assert!(error3.to_string().contains("network error"));
-
     let error4: NewError = NewError::InvalidName("bad name".to_string());
     assert!(error4.to_string().contains("bad name"));
 }

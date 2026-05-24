@@ -2,7 +2,7 @@ use crate::*;
 
 /// Configuration for template generation
 #[derive(Clone, Debug)]
-pub(crate) struct TemplateConfig {
+pub struct TemplateConfig {
     /// Type of template component to generate
     pub template_type: TemplateType,
     /// Name of the component

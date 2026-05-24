@@ -1,6 +1,6 @@
 /// Types of version bumps
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub(crate) enum BumpVersionType {
+pub enum BumpVersionType {
     /// Bump patch version (0.1.0 -> 0.1.1)
     Patch,
     /// Bump minor version (0.1.0 -> 0.2.0)

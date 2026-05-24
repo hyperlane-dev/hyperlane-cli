@@ -1,3 +1,3 @@
 mod r#enum;
 
-pub(crate) use r#enum::*;
+pub use r#enum::*;

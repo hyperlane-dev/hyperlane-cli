@@ -1,6 +1,6 @@
 /// Errors that can occur during project creation
 #[derive(Debug, thiserror::Error)]
-pub(crate) enum NewError {
+pub enum NewError {
     /// IO error occurred
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),

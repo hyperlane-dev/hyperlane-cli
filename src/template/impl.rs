@@ -31,7 +31,7 @@ impl TemplateConfig {
     /// # Returns
     ///
     /// - `Self`: Configuration instance
-    pub(crate) fn new(
+    pub fn new(
         template_type: TemplateType,
         component_name: String,
         model_sub_type: Option<ModelSubType>,

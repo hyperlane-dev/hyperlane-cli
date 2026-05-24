@@ -1,6 +1,6 @@
 /// Parsed version components following semantic versioning
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct Version {
+pub struct Version {
     /// Major version number
     pub major: u64,
     /// Minor version number

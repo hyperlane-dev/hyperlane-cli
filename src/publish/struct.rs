@@ -1,6 +1,6 @@
 /// Package information in monorepo
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub(crate) struct Package {
+pub struct Package {
     /// Package name
     pub name: String,
     /// Package version
@@ -13,7 +13,7 @@ pub(crate) struct Package {
 
 /// Publish result for a single package
 #[derive(Clone, Debug)]
-pub(crate) struct PublishResult {
+pub struct PublishResult {
     /// Package name
     pub package_name: String,
     /// Whether publish succeeded
