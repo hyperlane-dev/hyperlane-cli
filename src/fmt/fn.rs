@@ -156,7 +156,7 @@ async fn format_derive_attributes(manifest_path: &str) -> Result<(), std::io::Er
     }
     let count: usize = *modified_count.lock().await;
     if count > 0 {
-        println!("Sorted derive attributes in {count} files");
+        log::info!("Sorted derive attributes in {count} files");
     }
     Ok(())
 }
@@ -183,7 +183,7 @@ async fn is_cargo_clippy_installed() -> bool {
 ///
 /// - `Result<(), std::io::Error>`: Success or error
 async fn install_cargo_clippy() -> Result<(), std::io::Error> {
-    println!("cargo-clippy not found, installing...");
+    log::warn!("cargo-clippy not found, installing...");
     let mut cmd: Command = Command::new("rustup");
     cmd.arg("component").arg("add").arg("clippy");
     cmd.stdout(Stdio::inherit()).stderr(Stdio::inherit());

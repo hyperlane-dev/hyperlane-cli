@@ -21,7 +21,7 @@ async fn is_cargo_watch_installed() -> bool {
 ///
 /// - `Result<(), std::io::Error>`: Success or error
 async fn install_cargo_watch() -> Result<(), std::io::Error> {
-    println!("cargo-watch not found, installing...");
+    log::warn!("cargo-watch not found, installing...");
     let mut cmd: Command = Command::new("cargo");
     cmd.arg("install").arg("cargo-watch");
     cmd.stdout(Stdio::inherit()).stderr(Stdio::inherit());

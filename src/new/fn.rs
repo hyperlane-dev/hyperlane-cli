@@ -92,13 +92,13 @@ pub async fn execute_new(project_name: &str) -> Result<(), NewError> {
     validate_project_name(project_name)?;
     check_git_available().await?;
     let config: NewProjectConfig = NewProjectConfig::new(project_name.to_string());
-    println!(
+    log::info!(
         "Creating new project '{}' from template...",
         config.project_name
     );
     git_clone(&config).await?;
-    println!("Successfully created project '{}'", config.project_name);
-    println!("  cd {}", config.project_name);
-    println!("  cargo build");
+    log::info!("Successfully created project '{}'", config.project_name);
+    log::info!("  cd {}", config.project_name);
+    log::info!("  cargo build");
     Ok(())
 }

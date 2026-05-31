@@ -383,7 +383,7 @@ pub async fn execute_template(
         }
     }
     let _: Result<(), std::io::Error> = crate::fmt::format_path(&target_dir).await;
-    println!(
+    log::info!(
         "Created {} '{}' at {}",
         dir_name,
         config.component_name,

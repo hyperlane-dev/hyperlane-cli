@@ -1,4 +1,4 @@
 /// Print version
 pub fn print_version() {
-    println!("hyperlane-cli {}", env!("CARGO_PKG_VERSION"));
+    log::info!("hyperlane-cli {}", env!("CARGO_PKG_VERSION"));
 }

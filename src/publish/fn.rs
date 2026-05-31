@@ -304,21 +304,22 @@ pub async fn execute_publish(
     let sorted_packages: Vec<Package> = topological_sort(&packages)?;
     let mut results: Vec<PublishResult> = Vec::new();
     for package in sorted_packages {
-        println!("Publishing {} v{}...", package.name, package.version);
+        log::info!("Publishing {} v{}...", package.name, package.version);
         let result: PublishResult = publish_package_with_retry(&package, max_retries).await;
         if result.success {
             if result.retries == 0 {
-                println!("Successfully published {}", result.package_name,);
+                log::info!("Successfully published {}", result.package_name,);
             } else {
-                println!(
+                log::info!(
                     "Successfully published {} (retried {} times)",
-                    result.package_name, result.retries
+                    result.package_name,
+                    result.retries
                 );
             }
         } else if let Some(error) = &result.error {
-            eprintln!("Failed to publish {}: {error}", result.package_name);
+            log::error!("Failed to publish {}: {error}", result.package_name);
         } else {
-            eprintln!("Failed to publish {}", result.package_name);
+            log::error!("Failed to publish {}", result.package_name);
         }
         results.push(result);
     }
