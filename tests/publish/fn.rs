@@ -5,7 +5,7 @@ fn test_package_creation() {
     let package: Package = Package {
         name: "test-package".to_string(),
         version: "0.1.0".to_string(),
-        path: std::path::PathBuf::from("."),
+        path: PathBuf::from("."),
         local_dependencies: vec![],
     };
     assert_eq!(package.name, "test-package");
@@ -18,7 +18,7 @@ fn test_package_clone() {
     let package: Package = Package {
         name: "test-package".to_string(),
         version: "0.1.0".to_string(),
-        path: std::path::PathBuf::from("."),
+        path: PathBuf::from("."),
         local_dependencies: vec!["dep1".to_string()],
     };
     let cloned: Package = package.clone();
@@ -32,13 +32,13 @@ fn test_package_equality() {
     let package1: Package = Package {
         name: "test".to_string(),
         version: "0.1.0".to_string(),
-        path: std::path::PathBuf::from("."),
+        path: PathBuf::from("."),
         local_dependencies: vec![],
     };
     let package2: Package = Package {
         name: "test".to_string(),
         version: "0.1.0".to_string(),
-        path: std::path::PathBuf::from("."),
+        path: PathBuf::from("."),
         local_dependencies: vec![],
     };
     assert_eq!(package1, package2);
@@ -96,7 +96,7 @@ fn test_publish_error_display() {
 
 #[test]
 fn test_publish_error_from_io() {
-    let io_error: std::io::Error = std::io::Error::new(std::io::ErrorKind::NotFound, "test");
+    let io_error: io::Error = io::Error::new(io::ErrorKind::NotFound, "test");
     let publish_error: PublishError = PublishError::from(io_error);
     assert!(publish_error.to_string().contains("IO error"));
 }

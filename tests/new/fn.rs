@@ -24,7 +24,7 @@ fn test_new_error_display() {
 
 #[test]
 fn test_new_error_from_io() {
-    let io_error: std::io::Error = std::io::Error::new(std::io::ErrorKind::NotFound, "test");
+    let io_error: io::Error = io::Error::new(io::ErrorKind::NotFound, "test");
     let new_error: NewError = NewError::from(io_error);
     assert!(new_error.to_string().contains("test"));
 }

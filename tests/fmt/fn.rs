@@ -1,13 +1,13 @@
 use super::*;
 
-#[test]
-fn test_format_path_integration() {
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_format_path_integration() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_fmt");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    let _ = create_dir_all(&tmp_dir).await;
     let test_file: PathBuf = tmp_dir.join("test.rs");
-    std::fs::write(&test_file, "fn main() {\n    println!(\"hello\");\n}\n").unwrap();
-    let rt: tokio::runtime::Runtime = tokio::runtime::Runtime::new().unwrap();
-    let result: Result<(), std::io::Error> = rt.block_on(format_path(&tmp_dir));
+    write(&test_file, "fn main() {\n    println!(\"hello\");\n}\n")
+        .await
+        .unwrap();
+    let result: Result<(), io::Error> = format_path(&tmp_dir).await;
     assert!(result.is_ok());
 }

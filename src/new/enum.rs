@@ -1,9 +1,11 @@
+use crate::*;
+
 /// Errors that can occur during project creation
 #[derive(Debug, thiserror::Error)]
 pub enum NewError {
     /// IO error occurred
     #[error("IO error: {0}")]
-    IoError(#[from] std::io::Error),
+    IoError(#[from] io::Error),
     /// Git command not found
     #[error("Git is not installed or not found in PATH")]
     GitNotFound,

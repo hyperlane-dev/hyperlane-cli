@@ -40,154 +40,138 @@ fn test_version_clone() {
     assert_eq!(cloned.prerelease, version.prerelease);
 }
 
-#[test]
-fn test_execute_bump_integration() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_integration() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.1");
-    let updated_content: String = std::fs::read_to_string(&manifest_path).unwrap();
+    let updated_content: String = read_to_string(&manifest_path).await.unwrap();
     assert!(updated_content.contains("version = \"0.1.1\""));
 }
 
-#[test]
-fn test_execute_bump_minor() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_minor() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_minor");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Minor);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Minor).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.2.0");
 }
 
-#[test]
-fn test_execute_bump_major() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_major() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_major");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Major);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Major).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "1.0.0");
 }
 
-#[test]
-fn test_execute_bump_alpha() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_alpha() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_alpha");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Alpha);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Alpha).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0-alpha");
 }
 
-#[test]
-fn test_execute_bump_beta() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_beta() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_beta");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0-alpha.2"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Beta);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Beta).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0-beta.1");
 }
 
-#[test]
-fn test_execute_bump_rc() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_rc() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_rc");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0-beta.1"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Rc);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Rc).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0-rc.1");
 }
 
-#[test]
-fn test_execute_bump_release() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_release() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_release");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 version = "0.1.0-alpha"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Release);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Release).await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), "0.1.0");
 }
 
-#[test]
-fn test_execute_bump_no_version_field() {
-    use std::fs::write;
-    use std::path::PathBuf;
+#[tokio::test]
+async fn test_execute_bump_no_version_field() {
     let tmp_dir: PathBuf = PathBuf::from("./tmp/test_bump_no_version");
-    let _ = std::fs::create_dir_all(&tmp_dir);
+    create_dir_all(&tmp_dir).await.unwrap();
     let manifest_path: PathBuf = tmp_dir.join("Cargo.toml");
     let content: &str = r#"[package]
 name = "test-package"
 edition = "2024"
 "#;
-    write(&manifest_path, content).unwrap();
+    write(&manifest_path, content).await.unwrap();
     let result: Result<String, Box<dyn std::error::Error>> =
-        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch);
+        execute_bump(manifest_path.to_str().unwrap(), &BumpVersionType::Patch).await;
     assert!(result.is_err());
 }

@@ -9,8 +9,8 @@ use crate::*;
 /// # Returns
 ///
 /// - `Result<Vec<Package>, PublishError>`: List of packages or error
-fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError> {
-    let content: String = read_to_string(workspace_root)?;
+async fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError> {
+    let content: String = read_to_string(workspace_root).await?;
     let doc: toml::Value =
         toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let mut packages: Vec<Package> = Vec::new();
@@ -20,12 +20,12 @@ fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError
         for member in members {
             if let Some(pattern) = member.as_str() {
                 let base_path: &Path = workspace_root.parent().unwrap_or(workspace_root);
-                expand_pattern(base_path, pattern, &mut packages)?;
+                expand_pattern(base_path, pattern, &mut packages).await?;
             }
         }
     }
     if packages.is_empty() {
-        let package: Package = read_single_package(workspace_root)?;
+        let package: Package = read_single_package(workspace_root).await?;
         packages.push(package);
     }
     Ok(packages)
@@ -42,7 +42,7 @@ fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError
 /// # Returns
 ///
 /// - `Result<(), PublishError>`: Success or error
-fn expand_pattern(
+async fn expand_pattern(
     base_path: &Path,
     pattern: &str,
     packages: &mut Vec<Package>,
@@ -51,13 +51,13 @@ fn expand_pattern(
         let parent: &Path = Path::new(pattern).parent().unwrap_or(Path::new("."));
         let full_parent: PathBuf = base_path.join(parent);
         if full_parent.is_dir() {
-            for entry in std::fs::read_dir(&full_parent)? {
-                let entry: std::fs::DirEntry = entry?;
+            let mut entries: ReadDir = read_dir(&full_parent).await?;
+            while let Some(entry) = entries.next_entry().await? {
                 let path: PathBuf = entry.path();
                 if path.is_dir() {
                     let cargo_toml: PathBuf = path.join("Cargo.toml");
                     if cargo_toml.exists() {
-                        let package: Package = read_package_manifest(&cargo_toml)?;
+                        let package: Package = read_package_manifest(&cargo_toml).await?;
                         packages.push(package);
                     }
                 }
@@ -66,7 +66,7 @@ fn expand_pattern(
     } else {
         let cargo_toml: PathBuf = base_path.join(pattern).join("Cargo.toml");
         if cargo_toml.exists() {
-            let package: Package = read_package_manifest(&cargo_toml)?;
+            let package: Package = read_package_manifest(&cargo_toml).await?;
             packages.push(package);
         }
     }
@@ -82,8 +82,8 @@ fn expand_pattern(
 /// # Returns
 ///
 /// - `Result<Package, PublishError>`: Package info or error
-fn read_single_package(manifest_path: &Path) -> Result<Package, PublishError> {
-    read_package_manifest(manifest_path)
+async fn read_single_package(manifest_path: &Path) -> Result<Package, PublishError> {
+    read_package_manifest(manifest_path).await
 }
 
 /// Read package manifest and extract information
@@ -95,8 +95,8 @@ fn read_single_package(manifest_path: &Path) -> Result<Package, PublishError> {
 /// # Returns
 ///
 /// - `Result<Package, PublishError>`: Package info or error
-fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishError> {
-    let content: String = read_to_string(manifest_path)?;
+async fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishError> {
+    let content: String = read_to_string(manifest_path).await?;
     let doc: toml::Value =
         toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let package_table: &toml::Value = doc.get("package").ok_or(PublishError::ManifestParseError)?;
@@ -243,7 +243,7 @@ async fn publish_package_with_retry(package: &Package, max_retries: u32) -> Publ
                 last_error = Some(error.to_string());
                 attempt += 1;
                 if attempt <= max_retries {
-                    tokio::time::sleep(tokio::time::Duration::from_secs(2_u64.pow(attempt))).await;
+                    sleep(Duration::from_secs(2_u64.pow(attempt))).await;
                 }
             }
         }
@@ -297,7 +297,7 @@ pub async fn execute_publish(
     max_retries: u32,
 ) -> Result<Vec<PublishResult>, PublishError> {
     let path: &Path = Path::new(manifest_path);
-    let packages: Vec<Package> = discover_packages(path)?;
+    let packages: Vec<Package> = discover_packages(path).await?;
     if packages.is_empty() {
         return Ok(Vec::new());
     }

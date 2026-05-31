@@ -189,12 +189,12 @@ fn find_version_position(line: &str) -> Option<(usize, usize)> {
 /// # Returns
 ///
 /// - `Result<String, Box<dyn std::error::Error>>`: The new version string or an error
-pub fn execute_bump(
+pub async fn execute_bump(
     manifest_path: &str,
     bump_type: &BumpVersionType,
 ) -> Result<String, Box<dyn std::error::Error>> {
     let path: &Path = Path::new(manifest_path);
-    let content: String = read_to_string(path)?;
+    let content: String = read_to_string(path).await?;
     let mut new_version: Option<String> = None;
     let mut found_version: bool = false;
     let mut updated_content: String = content.clone();
@@ -209,9 +209,8 @@ pub fn execute_bump(
                 let version_string: String = version_to_string(&bumped);
                 new_version = Some(version_string.clone());
                 let new_line: String = format!(
-                    "{}{}{}",
+                    "{}{version_string}{}",
                     &line[..version_start],
-                    version_string,
                     &line[version_end..]
                 );
                 updated_content = updated_content.replacen(line, &new_line, 1);
@@ -222,7 +221,7 @@ pub fn execute_bump(
     if !found_version {
         return Err("version field not found in Cargo.toml".into());
     }
-    write(path, updated_content)?;
+    write(path, updated_content).await?;
     match new_version {
         Some(v) => Ok(v),
         None => Err("failed to bump version".into()),

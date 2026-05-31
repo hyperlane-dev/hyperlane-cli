@@ -1,3 +1,5 @@
+use crate::*;
+
 /// Error types for publish operation
 #[derive(Debug, thiserror::Error)]
 pub enum PublishError {
@@ -9,5 +11,5 @@ pub enum PublishError {
     CircularDependency,
     /// IO error
     #[error("IO error: {0}")]
-    IoError(#[from] std::io::Error),
+    IoError(#[from] io::Error),
 }

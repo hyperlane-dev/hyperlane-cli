@@ -17,7 +17,7 @@ fn sort_derive_in_line(line: &str) -> Option<String> {
         .map(|s: &str| s.trim().to_string())
         .filter(|s: &String| !s.is_empty())
         .collect();
-    traits.sort_by_key(|a| a.to_lowercase());
+    traits.sort_by_key(|a: &String| a.to_lowercase());
     let sorted_traits: String = traits.join(", ");
     let result: String = line.replace(derive_content, &sorted_traits);
     Some(result)
@@ -31,9 +31,9 @@ fn sort_derive_in_line(line: &str) -> Option<String> {
 ///
 /// # Returns
 ///
-/// - `Result<bool, std::io::Error>`: True if file was modified, false otherwise
-async fn format_derive_in_file(file_path: &Path) -> Result<bool, std::io::Error> {
-    let content: String = read_to_string(file_path)?;
+/// - `Result<bool, io::Error>`: True if file was modified, false otherwise
+async fn format_derive_in_file(file_path: &Path) -> Result<bool, io::Error> {
+    let content: String = read_to_string(file_path).await?;
     let lines: std::str::Lines<'_> = content.lines();
     let mut modified: bool = false;
     let mut new_content: String = String::new();
@@ -55,7 +55,7 @@ async fn format_derive_in_file(file_path: &Path) -> Result<bool, std::io::Error>
         new_content.push('\n');
     }
     if modified {
-        write(file_path, new_content)?;
+        write(file_path, new_content).await?;
     }
     Ok(modified)
 }
@@ -68,15 +68,15 @@ async fn format_derive_in_file(file_path: &Path) -> Result<bool, std::io::Error>
 ///
 /// # Returns
 ///
-/// - `Result<Vec<PathBuf>, std::io::Error>`: List of Rust file paths
-async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, std::io::Error> {
+/// - `Result<Vec<PathBuf>, io::Error>`: List of Rust file paths
+async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, io::Error> {
     let mut files: Vec<PathBuf> = Vec::new();
     let workspace_root: &Path = manifest_path.parent().unwrap_or(Path::new("."));
     let src_dir: PathBuf = workspace_root.join("src");
     if src_dir.exists() {
         find_rust_files_in_dir(&src_dir, &mut files).await?;
     }
-    let content: String = read_to_string(manifest_path)?;
+    let content: String = read_to_string(manifest_path).await?;
     if let Ok(doc) = toml::from_str::<toml::Value>(&content)
         && let Some(workspace) = doc.get("workspace")
         && let Some(members) = workspace
@@ -104,12 +104,9 @@ async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, std::io::
 ///
 /// # Returns
 ///
-/// - `Result<(), std::io::Error>`: Success or error
-async fn find_rust_files_in_dir(
-    dir: &Path,
-    files: &mut Vec<PathBuf>,
-) -> Result<(), std::io::Error> {
-    let mut entries = tokio::fs::read_dir(dir).await?;
+/// - `Result<(), io::Error>`: Success or error
+async fn find_rust_files_in_dir(dir: &Path, files: &mut Vec<PathBuf>) -> Result<(), io::Error> {
+    let mut entries: ReadDir = read_dir(dir).await?;
     while let Some(entry) = entries.next_entry().await? {
         let path: PathBuf = entry.path();
         if path.is_file()
@@ -133,22 +130,21 @@ async fn find_rust_files_in_dir(
 ///
 /// # Returns
 ///
-/// - `Result<(), std::io::Error>`: Success or error
-async fn format_derive_attributes(manifest_path: &str) -> Result<(), std::io::Error> {
+/// - `Result<(), io::Error>`: Success or error
+async fn format_derive_attributes(manifest_path: &str) -> Result<(), io::Error> {
     let path: &Path = Path::new(manifest_path);
     let files: Vec<PathBuf> = find_rust_files(path).await?;
     let modified_count: Arc<Mutex<usize>> = Arc::new(Mutex::new(0));
-    let mut handles: Vec<tokio::task::JoinHandle<Result<(), std::io::Error>>> = Vec::new();
+    let mut handles: Vec<JoinHandle<Result<(), io::Error>>> = Vec::new();
     for file in files {
         let counter: Arc<Mutex<usize>> = Arc::clone(&modified_count);
-        let handle: tokio::task::JoinHandle<Result<(), std::io::Error>> =
-            tokio::spawn(async move {
-                if format_derive_in_file(&file).await? {
-                    let mut count: tokio::sync::MutexGuard<'_, usize> = counter.lock().await;
-                    *count += 1;
-                }
-                Ok(())
-            });
+        let handle: JoinHandle<Result<(), io::Error>> = spawn(async move {
+            if format_derive_in_file(&file).await? {
+                let mut count: MutexGuard<'_, usize> = counter.lock().await;
+                *count += 1;
+            }
+            Ok(())
+        });
         handles.push(handle);
     }
     for handle in handles {
@@ -166,30 +162,35 @@ async fn format_derive_attributes(manifest_path: &str) -> Result<(), std::io::Er
 /// # Returns
 ///
 /// - `bool`: True if cargo-clippy is available
-async fn is_cargo_clippy_installed() -> bool {
-    Command::new("cargo")
-        .arg("clippy")
-        .arg("--version")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .status()
-        .await
-        .is_ok_and(|status: ExitStatus| status.success())
+fn is_cargo_clippy_installed() -> bool {
+    which("cargo-clippy").is_ok()
 }
 
 /// Install cargo-clippy using rustup
 ///
 /// # Returns
 ///
-/// - `Result<(), std::io::Error>`: Success or error
-async fn install_cargo_clippy() -> Result<(), std::io::Error> {
+/// - `Result<(), io::Error>`: Success or error
+async fn install_cargo_clippy() -> Result<(), io::Error> {
     log::warn!("cargo-clippy not found, installing...");
-    let mut cmd: Command = Command::new("rustup");
-    cmd.arg("component").arg("add").arg("clippy");
-    cmd.stdout(Stdio::inherit()).stderr(Stdio::inherit());
-    let status: ExitStatus = cmd.status().await?;
-    if !status.success() {
-        return Err(std::io::Error::other("failed to install cargo-clippy"));
+    let output: std::process::Output = Command::new("rustup")
+        .arg("component")
+        .arg("add")
+        .arg("clippy")
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .await?;
+    let stdout: String = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr: String = String::from_utf8_lossy(&output.stderr).to_string();
+    if !stdout.is_empty() {
+        log::info!("{stdout}");
+    }
+    if !stderr.is_empty() {
+        log::error!("{stderr}");
+    }
+    if !output.status.success() {
+        return Err(io::Error::other("failed to install cargo-clippy"));
     }
     Ok(())
 }
@@ -202,9 +203,9 @@ async fn install_cargo_clippy() -> Result<(), std::io::Error> {
 ///
 /// # Returns
 ///
-/// - `Result<(), std::io::Error>`: Success or error
-async fn execute_clippy_fix(args: &Args) -> Result<(), std::io::Error> {
-    if !is_cargo_clippy_installed().await {
+/// - `Result<(), io::Error>`: Success or error
+async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
+    if !is_cargo_clippy_installed() {
         install_cargo_clippy().await?;
     }
     let mut cmd: Command = Command::new("cargo");
@@ -216,10 +217,18 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), std::io::Error> {
     if let Some(ref manifest_path) = args.manifest_path {
         cmd.arg("--manifest-path").arg(manifest_path);
     }
-    cmd.stdout(Stdio::inherit()).stderr(Stdio::inherit());
-    let status: ExitStatus = cmd.status().await?;
-    if !status.success() {
-        return Err(std::io::Error::other("cargo clippy --fix failed"));
+    cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
+    let output: std::process::Output = cmd.output().await?;
+    let stdout: String = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr: String = String::from_utf8_lossy(&output.stderr).to_string();
+    if !stdout.is_empty() {
+        log::info!("{stdout}");
+    }
+    if !stderr.is_empty() {
+        log::error!("{stderr}");
+    }
+    if !output.status.success() {
+        return Err(io::Error::other("cargo clippy --fix failed"));
     }
     Ok(())
 }
@@ -232,8 +241,8 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), std::io::Error> {
 ///
 /// # Returns
 ///
-/// - `Result<(), std::io::Error>`: Success or error
-pub async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
+/// - `Result<(), io::Error>`: Success or error
+pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
     let manifest_path: String = args
         .manifest_path
         .clone()
@@ -249,10 +258,18 @@ pub async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
     if let Some(ref manifest_path) = args.manifest_path {
         cmd.arg("--manifest-path").arg(manifest_path);
     }
-    cmd.stdout(Stdio::inherit()).stderr(Stdio::inherit());
-    let status: ExitStatus = cmd.status().await?;
-    if !status.success() {
-        return Err(std::io::Error::other("cargo fmt failed"));
+    cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
+    let output: std::process::Output = cmd.output().await?;
+    let stdout: String = String::from_utf8_lossy(&output.stdout).to_string();
+    let stderr: String = String::from_utf8_lossy(&output.stderr).to_string();
+    if !stdout.is_empty() {
+        log::info!("{stdout}");
+    }
+    if !stderr.is_empty() {
+        log::error!("{stderr}");
+    }
+    if !output.status.success() {
+        return Err(io::Error::other("cargo fmt failed"));
     }
     if !args.check {
         execute_clippy_fix(args).await?;
@@ -268,8 +285,8 @@ pub async fn execute_fmt(args: &Args) -> Result<(), std::io::Error> {
 ///
 /// # Returns
 ///
-/// - `Result<(), std::io::Error>`: Success or error
-pub async fn format_path(path: &std::path::Path) -> Result<(), std::io::Error> {
+/// - `Result<(), io::Error>`: Success or error
+pub async fn format_path(path: &Path) -> Result<(), io::Error> {
     let mut cmd: Command = Command::new("cargo");
     cmd.arg("fmt").arg("--").arg(path);
     cmd.stdout(Stdio::null()).stderr(Stdio::null());

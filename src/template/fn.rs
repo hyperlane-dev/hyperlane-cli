@@ -49,9 +49,9 @@ fn get_model_sub_type_name(sub_type: &ModelSubType) -> String {
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn ensure_directory(path: &Path) -> Result<(), TemplateError> {
+async fn ensure_directory(path: &Path) -> Result<(), TemplateError> {
     if !path.exists() {
-        create_dir_all(path)?;
+        create_dir_all(path).await?;
     }
     Ok(())
 }
@@ -66,7 +66,7 @@ fn ensure_directory(path: &Path) -> Result<(), TemplateError> {
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn write_mod_rs(path: &Path, modules: &[&str]) -> Result<(), TemplateError> {
+async fn write_mod_rs(path: &Path, modules: &[&str]) -> Result<(), TemplateError> {
     let mut content: String = String::new();
     for module in modules {
         let mod_name: String = if module.starts_with("r#") {
@@ -104,7 +104,7 @@ fn write_mod_rs(path: &Path, modules: &[&str]) -> Result<(), TemplateError> {
     }
     content.push('\n');
     content.push_str("use super::*;\n");
-    write(path, content)?;
+    write(path, content).await?;
     Ok(())
 }
 
@@ -117,8 +117,8 @@ fn write_mod_rs(path: &Path, modules: &[&str]) -> Result<(), TemplateError> {
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn write_empty_mod_rs(path: &Path) -> Result<(), TemplateError> {
-    write(path, "\n")?;
+async fn write_empty_mod_rs(path: &Path) -> Result<(), TemplateError> {
+    write(path, "\n").await?;
     Ok(())
 }
 
@@ -132,19 +132,19 @@ fn write_empty_mod_rs(path: &Path) -> Result<(), TemplateError> {
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_controller_template(
+async fn create_controller_template(
     target_dir: &Path,
     _component_name: &str,
 ) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["fn", "impl", "struct"])?;
+    write_mod_rs(&mod_rs, &["fn", "impl", "struct"]).await?;
     let fn_rs: PathBuf = target_dir.join("fn.rs");
-    write(&fn_rs, "use super::*;\n")?;
+    write(&fn_rs, "use super::*;\n").await?;
     let impl_rs: PathBuf = target_dir.join("impl.rs");
-    write(&impl_rs, "use super::*;\n")?;
+    write(&impl_rs, "use super::*;\n").await?;
     let struct_rs: PathBuf = target_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -158,16 +158,19 @@ fn create_controller_template(
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_view_template(target_dir: &Path, _component_name: &str) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+async fn create_view_template(
+    target_dir: &Path,
+    _component_name: &str,
+) -> Result<(), TemplateError> {
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["fn", "impl", "struct"])?;
+    write_mod_rs(&mod_rs, &["fn", "impl", "struct"]).await?;
     let fn_rs: PathBuf = target_dir.join("fn.rs");
-    write(&fn_rs, "use super::*;\n")?;
+    write(&fn_rs, "use super::*;\n").await?;
     let impl_rs: PathBuf = target_dir.join("impl.rs");
-    write(&impl_rs, "use super::*;\n")?;
+    write(&impl_rs, "use super::*;\n").await?;
     let struct_rs: PathBuf = target_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -181,14 +184,17 @@ fn create_view_template(target_dir: &Path, _component_name: &str) -> Result<(), 
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_service_template(target_dir: &Path, _component_name: &str) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+async fn create_service_template(
+    target_dir: &Path,
+    _component_name: &str,
+) -> Result<(), TemplateError> {
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["impl", "struct"])?;
+    write_mod_rs(&mod_rs, &["impl", "struct"]).await?;
     let impl_rs: PathBuf = target_dir.join("impl.rs");
-    write(&impl_rs, "use super::*;\n")?;
+    write(&impl_rs, "use super::*;\n").await?;
     let struct_rs: PathBuf = target_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -202,14 +208,17 @@ fn create_service_template(target_dir: &Path, _component_name: &str) -> Result<(
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_domain_template(target_dir: &Path, _component_name: &str) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+async fn create_domain_template(
+    target_dir: &Path,
+    _component_name: &str,
+) -> Result<(), TemplateError> {
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["impl", "struct"])?;
+    write_mod_rs(&mod_rs, &["impl", "struct"]).await?;
     let impl_rs: PathBuf = target_dir.join("impl.rs");
-    write(&impl_rs, "use super::*;\n")?;
+    write(&impl_rs, "use super::*;\n").await?;
     let struct_rs: PathBuf = target_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -223,25 +232,29 @@ fn create_domain_template(target_dir: &Path, _component_name: &str) -> Result<()
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_mapper_template(target_dir: &Path, _component_name: &str) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+async fn create_mapper_template(
+    target_dir: &Path,
+    _component_name: &str,
+) -> Result<(), TemplateError> {
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
     write_mod_rs(
         &mod_rs,
         &["const", "enum", "fn", "impl", "static", "struct"],
-    )?;
+    )
+    .await?;
     let const_rs: PathBuf = target_dir.join("const.rs");
-    write(&const_rs, "use super::*;\n")?;
+    write(&const_rs, "use super::*;\n").await?;
     let enum_rs: PathBuf = target_dir.join("enum.rs");
-    write(&enum_rs, "use super::*;\n")?;
+    write(&enum_rs, "use super::*;\n").await?;
     let fn_rs: PathBuf = target_dir.join("fn.rs");
-    write(&fn_rs, "use super::*;\n")?;
+    write(&fn_rs, "use super::*;\n").await?;
     let impl_rs: PathBuf = target_dir.join("impl.rs");
-    write(&impl_rs, "use super::*;\n")?;
+    write(&impl_rs, "use super::*;\n").await?;
     let static_rs: PathBuf = target_dir.join("static.rs");
-    write(&static_rs, "use super::*;\n")?;
+    write(&static_rs, "use super::*;\n").await?;
     let struct_rs: PathBuf = target_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -255,12 +268,15 @@ fn create_mapper_template(target_dir: &Path, _component_name: &str) -> Result<()
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_utils_template(target_dir: &Path, _component_name: &str) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+async fn create_utils_template(
+    target_dir: &Path,
+    _component_name: &str,
+) -> Result<(), TemplateError> {
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["fn"])?;
+    write_mod_rs(&mod_rs, &["fn"]).await?;
     let fn_rs: PathBuf = target_dir.join("fn.rs");
-    write(&fn_rs, "use super::*;\n")?;
+    write(&fn_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -274,13 +290,13 @@ fn create_utils_template(target_dir: &Path, _component_name: &str) -> Result<(),
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_exception_template(
+async fn create_exception_template(
     target_dir: &Path,
     _component_name: &str,
 ) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_empty_mod_rs(&mod_rs)?;
+    write_empty_mod_rs(&mod_rs).await?;
     Ok(())
 }
 
@@ -294,17 +310,17 @@ fn create_exception_template(
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_repository_template(
+async fn create_repository_template(
     target_dir: &Path,
     _component_name: &str,
 ) -> Result<(), TemplateError> {
-    ensure_directory(target_dir)?;
+    ensure_directory(target_dir).await?;
     let mod_rs: PathBuf = target_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["impl", "struct"])?;
+    write_mod_rs(&mod_rs, &["impl", "struct"]).await?;
     let impl_rs: PathBuf = target_dir.join("impl.rs");
-    write(&impl_rs, "use super::*;\n")?;
+    write(&impl_rs, "use super::*;\n").await?;
     let struct_rs: PathBuf = target_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -319,18 +335,18 @@ fn create_repository_template(
 /// # Returns
 ///
 /// - `Result<(), TemplateError>`: Success or error
-fn create_model_template(
+async fn create_model_template(
     target_dir: &Path,
     _component_name: &str,
     sub_type: &ModelSubType,
 ) -> Result<(), TemplateError> {
     let sub_type_name: String = get_model_sub_type_name(sub_type);
     let model_dir: PathBuf = target_dir.join(&sub_type_name);
-    ensure_directory(&model_dir)?;
+    ensure_directory(&model_dir).await?;
     let mod_rs: PathBuf = model_dir.join("mod.rs");
-    write_mod_rs(&mod_rs, &["struct"])?;
+    write_mod_rs(&mod_rs, &["struct"]).await?;
     let struct_rs: PathBuf = model_dir.join("struct.rs");
-    write(&struct_rs, "use super::*;\n")?;
+    write(&struct_rs, "use super::*;\n").await?;
     Ok(())
 }
 
@@ -361,31 +377,34 @@ pub async fn execute_template(
             target_dir.to_string_lossy().to_string(),
         ));
     }
-    ensure_directory(&type_dir)?;
+    ensure_directory(&type_dir).await?;
     match config.template_type {
         TemplateType::Controller => {
-            create_controller_template(&target_dir, &config.component_name)?
+            create_controller_template(&target_dir, &config.component_name).await?
         }
-        TemplateType::View => create_view_template(&target_dir, &config.component_name)?,
-        TemplateType::Service => create_service_template(&target_dir, &config.component_name)?,
-        TemplateType::Domain => create_domain_template(&target_dir, &config.component_name)?,
-        TemplateType::Mapper => create_mapper_template(&target_dir, &config.component_name)?,
-        TemplateType::Utils => create_utils_template(&target_dir, &config.component_name)?,
-        TemplateType::Exception => create_exception_template(&target_dir, &config.component_name)?,
+        TemplateType::View => create_view_template(&target_dir, &config.component_name).await?,
+        TemplateType::Service => {
+            create_service_template(&target_dir, &config.component_name).await?
+        }
+        TemplateType::Domain => create_domain_template(&target_dir, &config.component_name).await?,
+        TemplateType::Mapper => create_mapper_template(&target_dir, &config.component_name).await?,
+        TemplateType::Utils => create_utils_template(&target_dir, &config.component_name).await?,
+        TemplateType::Exception => {
+            create_exception_template(&target_dir, &config.component_name).await?
+        }
         TemplateType::Repository => {
-            create_repository_template(&target_dir, &config.component_name)?
+            create_repository_template(&target_dir, &config.component_name).await?
         }
         TemplateType::Model => {
             let sub_type: ModelSubType = config.model_sub_type.ok_or_else(|| {
                 TemplateError::InvalidModelSubType("Missing model subtype".to_string())
             })?;
-            create_model_template(&target_dir, &config.component_name, &sub_type)?;
+            create_model_template(&target_dir, &config.component_name, &sub_type).await?;
         }
     }
-    let _: Result<(), std::io::Error> = crate::fmt::format_path(&target_dir).await;
+    let _: Result<(), io::Error> = crate::fmt::format_path(&target_dir).await;
     log::info!(
-        "Created {} '{}' at {}",
-        dir_name,
+        "Created {dir_name} '{}' at {}",
         config.component_name,
         target_dir.display()
     );

@@ -1,3 +1,5 @@
+use crate::*;
+
 /// Package information in monorepo
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Package {
@@ -6,7 +8,7 @@ pub struct Package {
     /// Package version
     pub version: String,
     /// Path to package directory
-    pub path: std::path::PathBuf,
+    pub path: PathBuf,
     /// Dependencies within the monorepo
     pub local_dependencies: Vec<String>,
 }

@@ -1,3 +1,5 @@
+use crate::*;
+
 /// Types of template components that can be generated
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum TemplateType {
@@ -37,7 +39,7 @@ pub enum ModelSubType {
 pub enum TemplateError {
     /// IO error occurred
     #[error("IO error: {0}")]
-    IoError(#[from] std::io::Error),
+    IoError(#[from] io::Error),
     /// Invalid template type
     #[error("Invalid template type: {0}")]
     InvalidTemplateType(String),
