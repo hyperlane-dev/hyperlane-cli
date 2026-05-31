@@ -181,13 +181,29 @@ async fn install_cargo_clippy() -> Result<(), io::Error> {
         .stderr(Stdio::piped())
         .output()
         .await?;
-    let stdout: String = String::from_utf8_lossy(&output.stdout).to_string();
-    let stderr: String = String::from_utf8_lossy(&output.stderr).to_string();
+    let stdout: String = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let stderr: String = String::from_utf8_lossy(&output.stderr).trim().to_string();
     if !stdout.is_empty() {
-        log::info!("{stdout}");
+        for line in stdout.lines() {
+            log::info!("{line}");
+        }
     }
     if !stderr.is_empty() {
-        log::error!("{stderr}");
+        if output.status.success() {
+            for line in stderr.lines() {
+                if line.is_empty() {
+                    continue;
+                }
+                log::info!("{line}");
+            }
+        } else {
+            for line in stderr.lines() {
+                if line.is_empty() {
+                    continue;
+                }
+                log::error!("{line}");
+            }
+        }
     }
     if !output.status.success() {
         return Err(io::Error::other("failed to install cargo-clippy"));
@@ -219,13 +235,29 @@ async fn execute_clippy_fix(args: &Args) -> Result<(), io::Error> {
     }
     cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
     let output: std::process::Output = cmd.output().await?;
-    let stdout: String = String::from_utf8_lossy(&output.stdout).to_string();
-    let stderr: String = String::from_utf8_lossy(&output.stderr).to_string();
+    let stdout: String = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let stderr: String = String::from_utf8_lossy(&output.stderr).trim().to_string();
     if !stdout.is_empty() {
-        log::info!("{stdout}");
+        for line in stdout.lines() {
+            log::info!("{line}");
+        }
     }
     if !stderr.is_empty() {
-        log::error!("{stderr}");
+        if output.status.success() {
+            for line in stderr.lines() {
+                if line.is_empty() {
+                    continue;
+                }
+                log::info!("{line}");
+            }
+        } else {
+            for line in stderr.lines() {
+                if line.is_empty() {
+                    continue;
+                }
+                log::error!("{line}");
+            }
+        }
     }
     if !output.status.success() {
         return Err(io::Error::other("cargo clippy --fix failed"));
@@ -260,13 +292,29 @@ pub async fn execute_fmt(args: &Args) -> Result<(), io::Error> {
     }
     cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
     let output: std::process::Output = cmd.output().await?;
-    let stdout: String = String::from_utf8_lossy(&output.stdout).to_string();
-    let stderr: String = String::from_utf8_lossy(&output.stderr).to_string();
+    let stdout: String = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let stderr: String = String::from_utf8_lossy(&output.stderr).trim().to_string();
     if !stdout.is_empty() {
-        log::info!("{stdout}");
+        for line in stdout.lines() {
+            log::info!("{line}");
+        }
     }
     if !stderr.is_empty() {
-        log::error!("{stderr}");
+        if output.status.success() {
+            for line in stderr.lines() {
+                if line.is_empty() {
+                    continue;
+                }
+                log::info!("{line}");
+            }
+        } else {
+            for line in stderr.lines() {
+                if line.is_empty() {
+                    continue;
+                }
+                log::error!("{line}");
+            }
+        }
     }
     if !output.status.success() {
         return Err(io::Error::other("cargo fmt failed"));
