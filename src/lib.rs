@@ -18,17 +18,17 @@ pub use {
     watch::*,
 };
 
-pub use std::{
+pub(crate) use std::{
     collections::{HashMap, VecDeque},
     env::args,
     fs::{create_dir_all, read_to_string, write},
     path::{Path, PathBuf},
-    process::{ExitStatus, Stdio, exit},
+    process::{ExitStatus, Stdio},
     str::FromStr,
     sync::{Arc, LazyLock},
 };
 
-pub use {
+pub(crate) use {
     regex::{Captures, Regex},
     tokio::{process::Command, sync::Mutex},
 };

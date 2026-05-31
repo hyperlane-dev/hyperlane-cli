@@ -4,6 +4,8 @@
 
 use hyperlane_cli::*;
 
+use std::process::exit;
+
 #[tokio::main]
 async fn main() {
     let args: Args = parse_args();
