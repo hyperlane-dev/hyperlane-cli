@@ -13,7 +13,7 @@ pub fn parse_args() -> Args {
     let mut check: bool = false;
     let mut manifest_path: Option<String> = None;
     let mut bump_type: Option<BumpVersionType> = None;
-    let mut max_retries: u32 = 3;
+    let mut max_retries: u32 = 8;
     let mut project_name: Option<String> = None;
     let mut template_type: Option<TemplateType> = None;
     let mut model_sub_type: Option<ModelSubType> = None;

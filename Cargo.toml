@@ -1,6 +1,6 @@
 [package]
 name = "hyperlane-cli"
-version = "0.1.17"
+version = "0.1.18"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -20,7 +20,7 @@ toml = "0.9.12"
 regex = "1.12.3"
 thiserror = "2.0.18"
 tokio = { version = "1.52.3", features = ["full"] }
-log = "0.4.30"
+log = "0.4.32"
 which = "8.0.2"
 notify = { version = "8.2.0", default-features = false, features = [
     "macos_fsevent",
