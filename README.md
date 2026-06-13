@@ -10,8 +10,6 @@
 
 </center>
 
-[Official Documentation](https://docs.ltpp.vip/hyperlane-cli/)
-
 [Api Docs](https://docs.rs/hyperlane-cli/latest/)
 
 ## Description
