@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Types of template components that can be generated
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

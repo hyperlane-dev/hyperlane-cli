@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Package information in monorepo
 #[derive(Clone, Debug, Eq, PartialEq)]

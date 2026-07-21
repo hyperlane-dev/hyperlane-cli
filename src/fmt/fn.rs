@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Sort derive traits in a single line
 ///
@@ -77,11 +77,9 @@ async fn find_rust_files(manifest_path: &Path) -> Result<Vec<PathBuf>, io::Error
         find_rust_files_in_dir(&src_dir, &mut files).await?;
     }
     let content: String = read_to_string(manifest_path).await?;
-    if let Ok(doc) = toml::from_str::<toml::Value>(&content)
+    if let Ok(doc) = toml::from_str::<Value>(&content)
         && let Some(workspace) = doc.get("workspace")
-        && let Some(members) = workspace
-            .get("members")
-            .and_then(|m: &toml::Value| m.as_array())
+        && let Some(members) = workspace.get("members").and_then(|m: &Value| m.as_array())
     {
         for member in members {
             if let Some(pattern) = member.as_str() {
@@ -109,11 +107,7 @@ async fn find_rust_files_in_dir(dir: &Path, files: &mut Vec<PathBuf>) -> Result<
     let mut entries: ReadDir = read_dir(dir).await?;
     while let Some(entry) = entries.next_entry().await? {
         let path: PathBuf = entry.path();
-        if path.is_file()
-            && path
-                .extension()
-                .is_some_and(|ext: &std::ffi::OsStr| ext == "rs")
-        {
+        if path.is_file() && path.extension().is_some_and(|ext: &OsStr| ext == "rs") {
             files.push(path);
         } else if path.is_dir() {
             Box::pin(find_rust_files_in_dir(&path, files)).await?;

@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 impl FromStr for TemplateType {
     type Err = TemplateError;

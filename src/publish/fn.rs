@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Discover all packages in the workspace
 ///
@@ -11,11 +11,12 @@ use crate::*;
 /// - `Result<Vec<Package>, PublishError>`: List of packages or error
 async fn discover_packages(workspace_root: &Path) -> Result<Vec<Package>, PublishError> {
     let content: String = read_to_string(workspace_root).await?;
-    let doc: toml::Value =
-        toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
+    let doc: Value = toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
     let mut packages: Vec<Package> = Vec::new();
     if let Some(workspace) = doc.get("workspace")
-        && let Some(members) = workspace.get("members").and_then(|m| m.as_array())
+        && let Some(members) = workspace
+            .get("members")
+            .and_then(|members_value: &Value| members_value.as_array())
     {
         for member in members {
             if let Some(pattern) = member.as_str() {
@@ -97,17 +98,16 @@ async fn read_single_package(manifest_path: &Path) -> Result<Package, PublishErr
 /// - `Result<Package, PublishError>`: Package info or error
 async fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishError> {
     let content: String = read_to_string(manifest_path).await?;
-    let doc: toml::Value =
-        toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
-    let package_table: &toml::Value = doc.get("package").ok_or(PublishError::ManifestParseError)?;
+    let doc: Value = toml::from_str(&content).map_err(|_| PublishError::ManifestParseError)?;
+    let package_table: &Value = doc.get("package").ok_or(PublishError::ManifestParseError)?;
     let name: String = package_table
         .get("name")
-        .and_then(|n: &toml::Value| n.as_str())
+        .and_then(|n: &Value| n.as_str())
         .ok_or(PublishError::ManifestParseError)?
         .to_string();
     let version: String = package_table
         .get("version")
-        .and_then(|v: &toml::Value| v.as_str())
+        .and_then(|v: &Value| v.as_str())
         .ok_or(PublishError::ManifestParseError)?
         .to_string();
     let path: PathBuf = manifest_path
@@ -127,26 +127,29 @@ async fn read_package_manifest(manifest_path: &Path) -> Result<Package, PublishE
 ///
 /// # Arguments
 ///
-/// - `&toml::Value`: Parsed manifest
+/// - `&Value`: Parsed manifest
 /// - `&Path`: Path to manifest for resolving relative paths
 ///
 /// # Returns
 ///
 /// - `Result<Vec<String>, PublishError>`: List of local dependency names
 fn extract_local_dependencies(
-    doc: &toml::Value,
+    doc: &Value,
     _manifest_path: &Path,
 ) -> Result<Vec<String>, PublishError> {
     let mut deps: Vec<String> = Vec::new();
     let dep_sections: [&str; 3] = ["dependencies", "dev-dependencies", "build-dependencies"];
     for section in &dep_sections {
-        if let Some(table) = doc.get(section).and_then(|s| s.as_table()) {
+        if let Some(table) = doc
+            .get(section)
+            .and_then(|section_value: &Value| section_value.as_table())
+        {
             for (dep_name, dep_value) in table {
                 let is_local: bool = match dep_value {
-                    toml::Value::Table(t) => {
+                    Value::Table(t) => {
                         t.get("path").is_some()
                             || t.get("workspace")
-                                .and_then(|w| w.as_bool())
+                                .and_then(|workspace_value: &Value| workspace_value.as_bool())
                                 .unwrap_or(false)
                     }
                     _ => false,
@@ -174,7 +177,7 @@ fn topological_sort(packages: &[Package]) -> Result<Vec<Package>, PublishError> 
     let mut graph: HashMap<String, Vec<String>> = HashMap::new();
     let package_map: HashMap<String, Package> = packages
         .iter()
-        .map(|p| (p.name.clone(), p.clone()))
+        .map(|package: &Package| (package.name.clone(), package.clone()))
         .collect();
     for package in packages {
         in_degree.entry(package.name.clone()).or_insert(0);

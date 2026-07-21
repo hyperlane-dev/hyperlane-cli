@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 impl NewProjectConfig {
     /// Create a new project configuration with default template

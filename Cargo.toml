@@ -1,6 +1,6 @@
 [package]
 name = "hyperlane-cli"
-version = "0.1.21"
+version = "0.1.22"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -19,14 +19,14 @@ path = "src/main.rs"
 toml = "0.9.12"
 regex = "1.13.1"
 thiserror = "2.0.19"
-tokio = { version = "1.53.0", features = ["full"] }
+tokio = { version = "1.53.1", features = ["full"] }
 log = "0.4.33"
 which = "8.0.5"
 notify = { version = "8.2.0", default-features = false, features = [
     "macos_fsevent",
 ] }
-color-output = "10.0.7"
-lombok-macros = "2.0.32"
+color-output = "10.0.8"
+lombok-macros = "2.0.33"
 
 [profile.dev]
 incremental = false

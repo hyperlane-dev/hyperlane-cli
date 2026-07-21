@@ -30,8 +30,12 @@ pub(crate) use std::{
 };
 
 pub(crate) use {
-    notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher, recommended_watcher},
+    notify::{
+        Error as NotifyError, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher,
+        recommended_watcher,
+    },
     regex::{Captures, Regex},
+    std::ffi::OsStr,
     tokio::{
         fs::{ReadDir, create_dir_all, read_dir, read_to_string, write},
         process::Command,
@@ -43,5 +47,6 @@ pub(crate) use {
         task::JoinHandle,
         time::{Duration, Interval, interval, sleep},
     },
+    toml::Value,
     which::which,
 };

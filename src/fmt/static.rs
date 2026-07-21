@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Regex pattern to match derive attribute
 ///

@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Execute cargo run command and capture output through log.
 ///
@@ -56,24 +56,24 @@ pub async fn execute_watch() -> Result<(), io::Error> {
     run_cargo_run().await?;
     let (tx, mut rx): (Sender<Event>, Receiver<Event>) = channel(Event::new(EventKind::Any));
     let mut watcher: RecommendedWatcher =
-        recommended_watcher(move |result: Result<Event, notify::Error>| {
+        recommended_watcher(move |result: Result<Event, NotifyError>| {
             if let Ok(event) = result {
                 let _ = tx.send(event);
             }
         })
-        .map_err(|error: notify::Error| io::Error::other(error.to_string()))?;
+        .map_err(|error: NotifyError| io::Error::other(error.to_string()))?;
     watcher
         .watch(&src_path, RecursiveMode::Recursive)
-        .map_err(|error: notify::Error| io::Error::other(error.to_string()))?;
+        .map_err(|error: NotifyError| io::Error::other(error.to_string()))?;
     log::info!("Watching src/ for changes...");
     let mut debounce: Interval = interval(Duration::from_millis(500));
     debounce.tick().await;
     while rx.changed().await.is_ok() {
         let event: Event = rx.borrow().clone();
-        let has_rust_change: bool = event.paths.iter().any(|path: &PathBuf| {
-            path.extension()
-                .is_some_and(|ext: &std::ffi::OsStr| ext == "rs")
-        });
+        let has_rust_change: bool = event
+            .paths
+            .iter()
+            .any(|path: &PathBuf| path.extension().is_some_and(|ext: &OsStr| ext == "rs"));
         if !has_rust_change {
             continue;
         }

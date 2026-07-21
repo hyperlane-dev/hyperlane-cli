@@ -1,4 +1,4 @@
-use crate::*;
+use super::*;
 
 /// Parse a version string into Version struct
 ///
