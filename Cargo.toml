@@ -1,6 +1,6 @@
 [package]
 name = "hyperlane-cli"
-version = "0.1.22"
+version = "0.1.23"
 readme = "README.md"
 edition = "2024"
 authors = ["root@ltpp.vip"]
@@ -25,8 +25,8 @@ which = "8.0.5"
 notify = { version = "8.2.0", default-features = false, features = [
     "macos_fsevent",
 ] }
-color-output = "10.0.8"
-lombok-macros = "2.0.33"
+color-output = "10.0.9"
+lombok-macros = "2.0.35"
 
 [profile.dev]
 incremental = false

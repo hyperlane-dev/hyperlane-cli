@@ -7,6 +7,9 @@ mod version;
 
 use hyperlane_cli::*;
 
-use std::{io, path::PathBuf};
+use std::{
+    io::{self, Error},
+    path::PathBuf,
+};
 
 use tokio::fs::{create_dir_all, read_to_string, write};

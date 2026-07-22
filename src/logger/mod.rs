@@ -8,3 +8,5 @@ pub use r#struct::*;
 pub use {::log, color_output::*};
 
 pub(crate) use {r#const::*, r#static::*};
+
+use log::SetLoggerError;

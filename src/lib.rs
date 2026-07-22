@@ -30,10 +30,7 @@ pub(crate) use std::{
 };
 
 pub(crate) use {
-    notify::{
-        Error as NotifyError, Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher,
-        recommended_watcher,
-    },
+    notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher, recommended_watcher},
     regex::{Captures, Regex},
     std::ffi::OsStr,
     tokio::{

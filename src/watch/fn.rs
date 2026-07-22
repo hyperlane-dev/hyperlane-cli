@@ -56,15 +56,15 @@ pub async fn execute_watch() -> Result<(), io::Error> {
     run_cargo_run().await?;
     let (tx, mut rx): (Sender<Event>, Receiver<Event>) = channel(Event::new(EventKind::Any));
     let mut watcher: RecommendedWatcher =
-        recommended_watcher(move |result: Result<Event, NotifyError>| {
+        recommended_watcher(move |result: Result<Event, notify::Error>| {
             if let Ok(event) = result {
-                let _ = tx.send(event);
+                let _: Result<(), tokio::sync::watch::error::SendError<Event>> = tx.send(event);
             }
         })
-        .map_err(|error: NotifyError| io::Error::other(error.to_string()))?;
+        .map_err(|error: notify::Error| io::Error::other(error.to_string()))?;
     watcher
         .watch(&src_path, RecursiveMode::Recursive)
-        .map_err(|error: NotifyError| io::Error::other(error.to_string()))?;
+        .map_err(|error: notify::Error| io::Error::other(error.to_string()))?;
     log::info!("Watching src/ for changes...");
     let mut debounce: Interval = interval(Duration::from_millis(500));
     debounce.tick().await;
